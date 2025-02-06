@@ -1,3 +1,142 @@
-h1 {
+/* Body styling */
+body {
+  background-image: url("world-map.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #fafef0;
+}
+
+/* General container styling */
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
   text-align: center;
+  background-color: rgba(
+    29,
+    29,
+    69,
+    0.7
+  ); /* Semi-transparent container background */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 2, 31, 0.5);
+  color: #fafef0;
+}
+
+/* Title styling */
+.container h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: #fafef0;
+}
+
+/* Dropdown styling */
+select {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #1d1d45;
+  color: #fafef0;
+  border: 1px solid #fafef0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  width: 80%;
+}
+
+/* City group layout */
+.display-city-group {
+  margin-top: 5px;
+}
+
+/* Individual city block */
+.display-city-block {
+  /*background: #1d1d45;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 2, 31, 0.5);*/
+  border-bottom: 1px dashed grey;
+  padding: 15px 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  color: #fafef0;
+}
+
+/* Last borderless*/
+.display-city-block:last-child {
+  border: none;
+}
+
+/* Weather emoji styling */
+.weather {
+  font-size: 32px;
+  grid-row: span 2 / span 2;
+  margin: auto;
+  padding: 4px;
+}
+
+/* City title */
+.display-city-block h2 {
+  font-size: 24px;
+  color: #fafef0;
+  text-align: center;
+  margin: auto;
+  padding: 4px;
+  grid-column: span 2 / span 2;
+}
+
+/* Date styling */
+.date {
+  font-size: 14px;
+  color: #bbbbbb;
+  opacity: 0.7;
+  margin: auto;
+  padding: 4px;
+  grid-column: span 2 / span 2;
+  grid-column-start: 2;
+  grid-row-start: 2;
+}
+
+/* Time styling */
+.time {
+  font-size: 32px;
+  font-weight: bold;
+  color: #fafef0;
+  text-align: center;
+  margin: auto;
+  padding: 4px;
+  grid-row: span 2 / span 2;
+  grid-column-start: 4;
+  grid-row-start: 1;
+}
+
+.time small {
+  font-size: 18px;
+  vertical-align: middle;
+  padding: 4px;
+  grid-row: span 2 / span 2;
+  grid-column-start: 5;
+  grid-row-start: 1;
+}
+
+/* Footer links */
+footer {
+  margin-top: 30px;
+  font-size: 14px;
+  color: #a4bfc8;
+  text-align: center;
+}
+
+footer a {
+  color: #fafef0;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
 }
