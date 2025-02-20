@@ -4,7 +4,27 @@
 
 function updateDisplayCurrent() {
   let currentLocation = moment.tz.guess();
-  console.log(currentLocation);
+  console.log(currentLocation); // Debugging
+
+  let cityTime = moment.tz(currentLocation);
+  console.log(cityTime); // Debugging
+
+  let cityName = currentLocation.replace("_", " ").split("/")[1];
+  console.log(cityName); //Debugging
+
+  let currentDisplayed = document.querySelector("#cities");
+  currentDisplayed.innerHTML = ` 
+  <div class="display-city-block">
+          <div class="weather">Emoji here</div>
+          <div class="city-name">
+          <h2>${cityName}</h2>
+          <small>current location</small>
+          </div>
+          <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
+          <div class="time">${cityTime.format(
+            "h:mm:ss"
+          )}<small>${cityTime.format("A")}</small></div>
+        </div>`;
 }
 
 /////////////////////////////
@@ -17,7 +37,9 @@ function updateDisplay(cityTimezone) {
   citiesDisplayed.innerHTML = ` 
   <div class="display-city-block">
           <div class="weather">Emoji here</div>
+          <div class="city-name">
           <h2>${cityName}</h2>
+          </div>
           <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
           <div class="time">${cityTime.format(
             "h:mm:ss"
@@ -33,10 +55,10 @@ function updateCity(event) {
 
   if (cityValue === "current") {
     updateDisplayCurrent();
-    //intervalId = setInterval(updateDisplayCurrent, 1000, cityValue);
+    //intervalId = setInterval(updateDisplayCurrent, 1000);
   } else {
     updateDisplay(cityValue);
-    intervalId = setInterval(updateDisplay, 1000, cityValue);
+    //intervalId = setInterval(updateDisplay, 1000, cityValue);
   }
 }
 
