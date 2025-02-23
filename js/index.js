@@ -1,50 +1,36 @@
 //////////////////////////////
 // Functions                //
 //////////////////////////////
+function updateCityDisplay(cityTimezone) {
+  let selectedLocation;
 
-function updateDisplayCurrent() {
-  let currentLocation = moment.tz.guess();
-  console.log(currentLocation); // Debugging
+  if (cityTimezone === "current") {
+    selectedLocation = moment.tz.guess();
+  } else {
+    selectedLocation = cityTimezone;
+  }
 
-  let cityTime = moment.tz(currentLocation);
-  console.log(cityTime); // Debugging
-
-  let cityName = currentLocation.replace("_", " ").split("/")[1];
-  console.log(cityName); //Debugging
-
-  let currentDisplayed = document.querySelector("#cities");
-  currentDisplayed.innerHTML = ` 
-  <div class="display-city-block">
-          <div class="weather">Emoji here</div>
-          <div class="city-name">
-          <h2>${cityName}</h2>
-          <small>current location</small>
-          </div>
-          <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
-          <div class="time">${cityTime.format(
-            "h:mm:ss"
-          )}<small>${cityTime.format("A")}</small></div>
-        </div>`;
-}
-
-/////////////////////////////
-
-function updateDisplay(cityTimezone) {
-  let cityTime = moment.tz(cityTimezone);
-  let cityName = cityTimezone.replace("_", " ").split("/")[1];
+  let cityTime = moment.tz(selectedLocation);
+  let cityName = selectedLocation.replace("_", " ").split("/")[1];
 
   let citiesDisplayed = document.querySelector("#cities");
   citiesDisplayed.innerHTML = ` 
   <div class="display-city-block">
-          <div class="weather">Emoji here</div>
           <div class="city-name">
           <h2>${cityName}</h2>
+          <div id="current"></div>
           </div>
-          <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
           <div class="time">${cityTime.format(
             "h:mm:ss"
           )}<small>${cityTime.format("A")}</small></div>
+                    <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
         </div>`;
+  // Add <div class="weather"> Emoji Here </div> at top of div
+
+  if (cityTimezone === "current") {
+    let currentLocation = document.querySelector("#current");
+    currentLocation.innerHTML = "<small>(current location)</small>";
+  }
 }
 
 /////////////////////////////
@@ -53,13 +39,11 @@ function updateCity(event) {
   let cityValue = event.target.value;
   clearInterval(intervalId);
 
-  if (cityValue === "current") {
-    updateDisplayCurrent();
-    //intervalId = setInterval(updateDisplayCurrent, 1000);
-  } else {
-    updateDisplay(cityValue);
-    //intervalId = setInterval(updateDisplay, 1000, cityValue);
-  }
+  updateCityDisplay(cityValue);
+  intervalId = setInterval(updateCityDisplay, 1000, cityValue);
+
+  let homeElement = document.querySelector("#home");
+  homeElement.innerHTML = `<input class="home-button" type="button" value="All Cities" onClick="location.href=location.href">`;
 }
 
 //////////////////////////////
@@ -67,6 +51,9 @@ function updateCity(event) {
 //////////////////////////////
 
 let intervalId; // Stores the interval ID
+
+updateCityDisplay("current");
+//intervalId = setInterval(updateCityDisplay, 1000, "current");
 
 let citySelect = document.querySelector("#city");
 citySelect.addEventListener("change", updateCity);
@@ -77,9 +64,9 @@ citySelect.addEventListener("change", updateCity);
 
 //Steps:
 ////1. Adjust the time so updates every second
-//2.a Show current location on LOAD and add home screen button
-//2.b Differentiate current location from London with a line under "(current location)"
-//3. Remove weather emoji, edit CSS as needed to make it pretty
+//2.a Show all 3 locations on LOAD and add home screen button
+////2.b Differentiate current location from London with a line under "(current location)"
+//3. Remove weather emoji, add 2-3 cities cities to home, edit CSS as needed to make it pretty
 //SUBMIT
 //4. Add up to 2 locations, then start deleting
 //5. Update for weather API for emoji
