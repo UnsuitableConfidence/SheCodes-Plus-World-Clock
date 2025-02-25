@@ -80,9 +80,22 @@ function onLoad() {
   updateCityDisplay();
   intervalId = setInterval(updateCityDisplay, 1000);
 }
+
+/////////////////////////////
+
+function advancedSearch() {}
+
 //////////////////////////////
 // Global Code              //
 //////////////////////////////
+let allCitiesData = [];
+fetch("momentMasterList.json")
+  .then((response) => response.json())
+  .then((data) => {
+    allCitiesData = data;
+    //populateRegions();
+  })
+  .catch((error) => console.error("Error loading JSON, ", error));
 
 let intervalId; // Stores the interval ID
 let firstTimeFlag = false;
@@ -90,7 +103,7 @@ let selectedCitiesGlobal = [];
 
 onLoad();
 
-let citySelect = document.querySelector("#city");
+let citySelect = document.querySelector("#city-selection");
 citySelect.addEventListener("change", updateCity);
 
 //////////////////////////////

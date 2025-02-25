@@ -12,7 +12,10 @@
   <body>
     <div class="container">
       <h1>World Clock</h1>
-      <select id="city">
+      <div class="search-element">
+        <div id="simp-search">
+          <!--
+      <select id="city-selection">
         <option value="undefined">Select a city...</option>
         <option value="current">My current location</option>
         <option value="Europe/London">London</option>
@@ -21,7 +24,23 @@
         <option value="Africa/Djibouti">Djibouti</option>
         <option value="Asia/Tokyo">Tokyo</option>
         <option value="America/Toronto">Toronto</option>
-      </select>
+      </select> 
+      -->
+        </div>
+        <div id="adv-search">
+          <form name="city-search" id="city-search">
+            Region:
+            <select name="region" id="region">
+              <option value="undefined">Select a region...</option>
+            </select>
+            <br /><br />
+            City:
+            <select name="city" id="city">
+              <option value="undefined">Select a city...</option>
+            </select>
+          </form>
+        </div>
+      </div>
       <div class="display-city-group" id="cities"></div>
       <div id="home"></div>
     </div>
