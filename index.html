@@ -13,13 +13,17 @@
     <div class="container">
       <h1>World Clock</h1>
       <select id="city">
-        <option value="">Select a city...</option>
+        <option value="undefined">Select a city...</option>
         <option value="current">My current location</option>
         <option value="Europe/London">London</option>
         <option value="America/New_York">New York</option>
         <option value="Pacific/Auckland">Auckland</option>
       </select>
-      <div class="display-city-group" id="cities"></div>
+      <div class="display-city-group" id="cities">
+        <div id="london"></div>
+        <div id="new_york"></div>
+        <div id="auckland"></div>
+      </div>
       <div id="home"></div>
     </div>
 

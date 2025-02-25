@@ -22,8 +22,10 @@ function updateCityDisplay(cityTimezone) {
           </div>
           <div class="time">${cityTime.format(
             "h:mm:ss"
-          )}<small>${cityTime.format("A")}</small></div>
-                    <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
+          )}<small>${cityTime.format("A")}</small>
+                    <div class="date">${cityTime.format(
+                      "MMMM Do YYYY"
+                    )}</div></div>
         </div>`;
   // Add <div class="weather"> Emoji Here </div> at top of div
 
@@ -39,21 +41,53 @@ function updateCity(event) {
   let cityValue = event.target.value;
   clearInterval(intervalId);
 
-  updateCityDisplay(cityValue);
-  intervalId = setInterval(updateCityDisplay, 1000, cityValue);
+  if (cityValue === "undefined") {
+    alert("Please select valid location");
+  } else {
+    updateCityDisplay(cityValue);
+    intervalId = setInterval(updateCityDisplay, 1000, cityValue);
 
-  let homeElement = document.querySelector("#home");
-  homeElement.innerHTML = `<input class="home-button" type="button" value="All Cities" onClick="location.href=location.href">`;
+    let homeElement = document.querySelector("#home");
+    homeElement.innerHTML = `<input class="home-button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
+  }
 }
 
+/////////////////////////////
+
+function onLoadDisplay() {
+  let loadCities = ["Europe/London", "America/New_York", "Pacific/Auckland"];
+  let citiesDisplayed = document.querySelector("#cities");
+  let allCitiesHTML = "";
+
+  for (let i = 0; i < loadCities.length; i++) {
+    let cityTime = moment.tz(loadCities[i]);
+    let cityName = loadCities[i].replace("_", " ").split("/")[1];
+
+    allCitiesHTML += `
+       <div class="display-city-block">
+          <div class="city-name">
+          <h2>${cityName}</h2>
+          <div id="current"></div>
+          </div>
+          <div class="time">${cityTime.format(
+            "h:mm:ss"
+          )}<small>${cityTime.format("A")}</small>
+                    <div class="date">${cityTime.format(
+                      "MMMM Do YYYY"
+                    )}</div></div>
+        </div>`;
+  }
+
+  citiesDisplayed.innerHTML = allCitiesHTML;
+}
 //////////////////////////////
 // Global Code              //
 //////////////////////////////
 
 let intervalId; // Stores the interval ID
 
-updateCityDisplay("current");
-//intervalId = setInterval(updateCityDisplay, 1000, "current");
+onLoadDisplay();
+intervalId = setInterval(onLoadDisplay, 1000);
 
 let citySelect = document.querySelector("#city");
 citySelect.addEventListener("change", updateCity);
@@ -64,15 +98,16 @@ citySelect.addEventListener("change", updateCity);
 
 //Steps:
 ////1. Adjust the time so updates every second
-//2.a Show all 3 locations on LOAD and add home screen button
-////2.b Differentiate current location from London with a line under "(current location)"
-//3. Remove weather emoji, add 2-3 cities cities to home, edit CSS as needed to make it pretty
+////2.a Show all 3 locations on LOAD
+////3. Add home screen button
+////4. Differentiate current location from London with a line under "(current location)"
+////5. Add "undefined" break alert
+////6. Remove weather emoji, edit CSS as needed to make it pretty
 //SUBMIT
-//4. Add up to 2 locations, then start deleting
-//5. Update for weather API for emoji
-//6. Add Advanced Dropdown
-//7. Update to 3 locations
-//8. If a city is picked twice, delete previous and update new one at the top.
+//1. Add Advanced Dropdown
+//2. Add up to 3 selected locations, then start deleting
+//3. If a city is picked twice, delete previous and update new one at the top.
+//4. Update for weather API for emoji
 
 //This can probably be improved using loops and injecting new values in each variable, with a max of 3)
 //weather emoji will use SheCodes weather API
