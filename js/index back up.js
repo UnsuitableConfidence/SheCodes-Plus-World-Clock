@@ -1,24 +1,21 @@
 //////////////////////////////
 // Functions                //
 //////////////////////////////
-function updateCityDisplay(selectedCitiesGlobal) {
-  let selectedCities = [];
-  selectedCities.push(selectedCitiesGlobal);
+function updateCityDisplay(cityTimezone) {
+  let selectedLocation;
 
-  for (let i = 0; i < selectedCities.length; i++) {
-    if (selectedCities[i] === "current") {
-      selectedCities[i] = moment.tz.guess();
-    }
+  if (cityTimezone === "current") {
+    selectedLocation = moment.tz.guess();
+  } else {
+    selectedLocation = cityTimezone;
   }
 
-  let citiesDisplayed = document.querySelector("#cities");
-  let selectedCitiesHTML = "";
+  let cityTime = moment.tz(selectedLocation);
+  let cityName = selectedLocation.replace("_", " ").split("/")[1];
 
-  for (let i = 0; i < selectedCities.length; i++) {
-    let cityTime = moment.tz(selectedCities[i]);
-    let cityName = selectedCities[i].replace("_", " ").split("/")[1];
-    selectedCitiesHTML += ` 
-          <div class="display-city-block">
+  let citiesDisplayed = document.querySelector("#cities");
+  citiesDisplayed.innerHTML = ` 
+  <div class="display-city-block">
           <div class="city-name">
           <h2>${cityName}</h2>
           <div id="current"></div>
@@ -29,35 +26,26 @@ function updateCityDisplay(selectedCitiesGlobal) {
                     <div class="date">${cityTime.format(
                       "MMMM Do YYYY"
                     )}</div></div>
-          </div>`;
-  }
+        </div>`;
   // Add <div class="weather"> Emoji Here </div> at top of div
 
-  citiesDisplayed.innerHTML = selectedCitiesHTML;
-
-  if (selectedCitiesGlobal[i] === "current") {
+  if (cityTimezone === "current") {
     let currentLocation = document.querySelector("#current");
     currentLocation.innerHTML = "<small>(current location)</small>";
   }
 }
 
-function updateCityDisplay(cityTimezone) {}
-
 /////////////////////////////
 
 function updateCity(event) {
   let cityValue = event.target.value;
+  clearInterval(intervalId);
 
   if (cityValue === "undefined") {
     alert("Please select valid location");
   } else {
-    if (!selectedCities.includes(selectedLocation)) {
-      selectedCities.push(selectedLocation);
-    }
-
-    updateHTMLDisplay();
-    //updateCityDisplay(cityValue);
-    //intervalId = setInterval(updateCityDisplay, 1000, cityValue);
+    updateCityDisplay(cityValue);
+    intervalId = setInterval(updateCityDisplay, 1000, cityValue);
 
     let homeElement = document.querySelector("#home");
     homeElement.innerHTML = `<input class="home-button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
@@ -68,14 +56,35 @@ function updateCity(event) {
 
 function onLoadDisplay() {
   let loadCities = ["Europe/London", "America/New_York", "Pacific/Auckland"];
-  //Run the updateHTMLDisplay function, using the above array for load
+  let citiesDisplayed = document.querySelector("#cities");
+  let allCitiesHTML = "";
+
+  for (let i = 0; i < loadCities.length; i++) {
+    let cityTime = moment.tz(loadCities[i]);
+    let cityName = loadCities[i].replace("_", " ").split("/")[1];
+
+    allCitiesHTML += `
+       <div class="display-city-block">
+          <div class="city-name">
+          <h2>${cityName}</h2>
+          <div id="current"></div>
+          </div>
+          <div class="time">${cityTime.format(
+            "h:mm:ss"
+          )}<small>${cityTime.format("A")}</small>
+                    <div class="date">${cityTime.format(
+                      "MMMM Do YYYY"
+                    )}</div></div>
+        </div>`;
+  }
+
+  citiesDisplayed.innerHTML = allCitiesHTML;
 }
 //////////////////////////////
 // Global Code              //
 //////////////////////////////
 
 let intervalId; // Stores the interval ID
-selectedCities = [];
 
 onLoadDisplay();
 intervalId = setInterval(onLoadDisplay, 1000);
