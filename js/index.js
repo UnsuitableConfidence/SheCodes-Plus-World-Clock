@@ -1,15 +1,12 @@
 //////////////////////////////
 // Functions                //
 //////////////////////////////
-function updateCityDisplay(selectedCitiesGlobal) {
-  let selectedCities = [];
-  selectedCities.push(selectedCitiesGlobal);
+function updateCityDisplay() {
+  let selectedCities = [...selectedCitiesGlobal];
 
-  for (let i = 0; i < selectedCities.length; i++) {
-    if (selectedCities[i] === "current") {
-      selectedCities[i] = moment.tz.guess();
-    }
-  }
+  selectedCities = selectedCities.map((city) =>
+    city === "current" ? moment.tz.guess() : city
+  );
 
   let citiesDisplayed = document.querySelector("#cities");
   let selectedCitiesHTML = "";
@@ -21,7 +18,7 @@ function updateCityDisplay(selectedCitiesGlobal) {
           <div class="display-city-block">
           <div class="city-name">
           <h2>${cityName}</h2>
-          <div id="current"></div>
+          <div class="current-label"></div>
           </div>
           <div class="time">${cityTime.format(
             "h:mm:ss"
@@ -35,13 +32,12 @@ function updateCityDisplay(selectedCitiesGlobal) {
 
   citiesDisplayed.innerHTML = selectedCitiesHTML;
 
-  if (selectedCitiesGlobal[i] === "current") {
-    let currentLocation = document.querySelector("#current");
-    currentLocation.innerHTML = "<small>(current location)</small>";
-  }
+  document.querySelectorAll(".current-label").forEach((label, index) => {
+    if (selectedCitiesGlobal[index] === "current") {
+      label.innerHTML = "<small>(current location)</small>";
+    }
+  });
 }
-
-function updateCityDisplay(cityTimezone) {}
 
 /////////////////////////////
 
@@ -51,13 +47,23 @@ function updateCity(event) {
   if (cityValue === "undefined") {
     alert("Please select valid location");
   } else {
-    if (!selectedCities.includes(selectedLocation)) {
-      selectedCities.push(selectedLocation);
+    clearInterval(intervalId);
+
+    if (!firstTimeFlag) {
+      selectedCitiesGlobal = [];
+      firstTimeFlag = true;
     }
 
-    updateHTMLDisplay();
-    //updateCityDisplay(cityValue);
-    //intervalId = setInterval(updateCityDisplay, 1000, cityValue);
+    if (selectedCitiesGlobal.includes(cityValue)) {
+      selectedCitiesGlobal = selectedCitiesGlobal.filter(
+        (current) => current !== cityValue
+      );
+    }
+    selectedCitiesGlobal.unshift(cityValue);
+    selectedCitiesGlobal = selectedCitiesGlobal.slice(0, 3);
+
+    updateCityDisplay();
+    intervalId = setInterval(updateCityDisplay, 1000);
 
     let homeElement = document.querySelector("#home");
     homeElement.innerHTML = `<input class="home-button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
@@ -66,19 +72,23 @@ function updateCity(event) {
 
 /////////////////////////////
 
-function onLoadDisplay() {
+function onLoad() {
   let loadCities = ["Europe/London", "America/New_York", "Pacific/Auckland"];
-  //Run the updateHTMLDisplay function, using the above array for load
+  selectedCitiesGlobal = [...loadCities];
+
+  clearInterval(intervalId);
+  updateCityDisplay();
+  intervalId = setInterval(updateCityDisplay, 1000);
 }
 //////////////////////////////
 // Global Code              //
 //////////////////////////////
 
 let intervalId; // Stores the interval ID
-selectedCities = [];
+let firstTimeFlag = false;
+let selectedCitiesGlobal = [];
 
-onLoadDisplay();
-intervalId = setInterval(onLoadDisplay, 1000);
+onLoad();
 
 let citySelect = document.querySelector("#city");
 citySelect.addEventListener("change", updateCity);
@@ -96,10 +106,12 @@ citySelect.addEventListener("change", updateCity);
 ////6. Remove weather emoji, edit CSS as needed to make it pretty
 //SUBMIT
 //1. Add Advanced Dropdown
-//2. Add up to 3 selected locations, then start deleting
-//3. If a city is picked twice, delete previous and update new one at the top.
+////2. Add up to 3 selected locations, then start deleting
+////3. If a city is picked twice, delete previous and update new one at the top.
 //4. Update for weather API for emoji
-//5. Re-edit CSS for Emoji integration
+//5a. Re-edit CSS for Emoji integration
+//5b. Make the Home button prettier
+//5c. Make the alert prettier
 //6. Pair down and make code more efficient
 
 //weather emoji will use SheCodes weather API
