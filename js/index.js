@@ -43,6 +43,7 @@ function updateCityDisplay() {
 
 function updateCity(event) {
   let cityValue = event.target.value;
+  console.log("moment value: ", cityValue); // Debugging
 
   if (cityValue === "undefined") {
     alert("Please select valid location");
@@ -63,7 +64,7 @@ function updateCity(event) {
     selectedCitiesGlobal = selectedCitiesGlobal.slice(0, 3);
 
     updateCityDisplay();
-    intervalId = setInterval(updateCityDisplay, 1000);
+    //intervalId = setInterval(updateCityDisplay, 1000); **DISABLED FOR CSS**
 
     let homeElement = document.querySelector("#home");
     homeElement.innerHTML = `<input class="button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
@@ -75,6 +76,27 @@ function updateCity(event) {
 function populateSearch() {
   /////////////////////////////
   //      Sub Functions      //
+  /////////////////////////////
+
+  function populateCities(event) {
+    let selectedRegion = event.target.value;
+
+    let citySelect = document.querySelector("#select-city");
+    citySelect.innerHTML = `<option value="undefined">Select a city...</option>`;
+
+    let filteredCities = allCitiesData.filter(
+      (city) => city.region === selectedRegion
+    );
+
+    filteredCities.forEach((city) => {
+      let option = document.createElement("option");
+      option.value = city["momentValue"];
+      option.textContent = city.city;
+      citySelect.appendChild(option);
+    });
+
+    citySelect.addEventListener("change", updateCity);
+  }
   /////////////////////////////
 
   function populateRegions() {
@@ -92,34 +114,7 @@ function populateSearch() {
       regionSelect.appendChild(option);
     });
 
-    document
-      .querySelector("#select-region")
-      .addEventListener("change", function () {
-        populateCities(this.value);
-      });
-  }
-
-  function populateCities(selectedRegion) {
-    let citySelect = document.querySelector("#select-city");
-    citySelect.innerHTML = `<option value="undefined">Select a city...</option>`;
-
-    let filteredCities = allCitiesData.filter(
-      (city) => city.region === selectedRegion
-    );
-
-    filteredCities.forEach((city) => {
-      let option = document.createElement("option");
-      option.value = city["momentValue"];
-      option.textContent = city.city;
-      citySelect.appendChild(option);
-    });
-
-    document
-      .querySelector("#select-city")
-      .addEventListener("change", function () {
-        let selectedMomentValue = this.value;
-        console.log("Selected Moment.js Value: ", selectedMomentValue);
-      });
+    regionSelect.addEventListener("change", populateCities);
   }
 
   /////////////////////////////
@@ -142,6 +137,9 @@ function populateSearch() {
 
     document.querySelector("#toggle-search").value = "Advanced Search";
     advancedSearchFlag = true;
+
+    let citySelect = document.querySelector("#select-city");
+    citySelect.addEventListener("change", updateCity);
   } else {
     let advancedSearch = document.querySelector("#search-box");
     advancedSearch.innerHTML = `
@@ -172,7 +170,7 @@ function onLoad() {
 
   clearInterval(intervalId);
   updateCityDisplay();
-  intervalId = setInterval(updateCityDisplay, 1000);
+  //intervalId = setInterval(updateCityDisplay, 1000);  **DISABLED FOR CSS**
 }
 
 //////////////////////////////
@@ -192,11 +190,9 @@ let intervalId; // Stores the interval ID
 let firstTimeFlag = false;
 let advancedSearchFlag = false;
 let selectedCitiesGlobal = [];
+let cityValue = "";
 
 onLoad();
-
-let citySelect = document.querySelector("#select-city");
-citySelect.addEventListener("change", updateCity);
 
 //////////////////////////////
 // Notes                    //
@@ -210,7 +206,7 @@ citySelect.addEventListener("change", updateCity);
 ////5. Add "undefined" break alert
 ////6. Remove weather emoji, edit CSS as needed to make it pretty
 //SUBMIT
-//1. Add Advanced Dropdown
+////1. Add Advanced Dropdown
 ////2. Add up to 3 selected locations, then start deleting
 ////3. If a city is picked twice, delete previous and update new one at the top.
 //4. Update for weather API for emoji
