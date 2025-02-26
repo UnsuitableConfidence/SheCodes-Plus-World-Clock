@@ -1,83 +1,9 @@
 //////////////////////////////
 // Functions                //
 //////////////////////////////
-function updateCityDisplay() {
-  let selectedCities = [...selectedCitiesGlobal];
-
-  selectedCities = selectedCities.map((city) =>
-    city === "current" ? moment.tz.guess() : city
-  );
-
-  let citiesDisplayed = document.querySelector("#cities");
-  let selectedCitiesHTML = "";
-
-  for (let i = 0; i < selectedCities.length; i++) {
-    let cityTime = moment.tz(selectedCities[i]);
-    let cityName = selectedCities[i].replace("_", " ").split("/")[1];
-    selectedCitiesHTML += ` 
-          <div class="display-city-block">
-          <div class="city-name">
-          <h2>${cityName}</h2>
-          <div class="current-label"></div>
-          </div>
-          <div class="time">${cityTime.format(
-            "h:mm:ss"
-          )}<small>${cityTime.format("A")}</small>
-                    <div class="date">${cityTime.format(
-                      "MMMM Do YYYY"
-                    )}</div></div>
-          </div>`;
-  }
-  // Add <div class="weather"> Emoji Here </div> at top of div
-
-  citiesDisplayed.innerHTML = selectedCitiesHTML;
-
-  document.querySelectorAll(".current-label").forEach((label, index) => {
-    if (selectedCitiesGlobal[index] === "current") {
-      label.innerHTML = "<small>(current location)</small>";
-    }
-  });
-}
-
-/////////////////////////////
-
-function updateCity(event) {
-  let cityValue = event.target.value;
-  console.log("moment value: ", cityValue); // Debugging
-
-  if (cityValue === "undefined") {
-    alert("Please select valid location");
-  } else {
-    clearInterval(intervalId);
-
-    if (!firstTimeFlag) {
-      selectedCitiesGlobal = [];
-      firstTimeFlag = true;
-    }
-
-    if (selectedCitiesGlobal.includes(cityValue)) {
-      selectedCitiesGlobal = selectedCitiesGlobal.filter(
-        (current) => current !== cityValue
-      );
-    }
-    selectedCitiesGlobal.unshift(cityValue);
-    selectedCitiesGlobal = selectedCitiesGlobal.slice(0, 3);
-
-    updateCityDisplay();
-    //intervalId = setInterval(updateCityDisplay, 1000); **DISABLED FOR CSS**
-
-    let homeElement = document.querySelector("#home");
-    homeElement.innerHTML = `<input class="button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
-  }
-}
-
-/////////////////////////////
 
 function populateSearch() {
-  /////////////////////////////
-  //      Sub Functions      //
-  /////////////////////////////
-
+  // Sub Function //
   function populateCities(event) {
     let selectedRegion = event.target.value;
 
@@ -97,8 +23,8 @@ function populateSearch() {
 
     citySelect.addEventListener("change", updateCity);
   }
-  /////////////////////////////
 
+  // Sub Function //
   function populateRegions() {
     let regionSelect = document.querySelector("#select-region");
     let selectedRegions = [
@@ -117,10 +43,7 @@ function populateSearch() {
     regionSelect.addEventListener("change", populateCities);
   }
 
-  /////////////////////////////
-  //      Body Function      //
-  /////////////////////////////
-
+  // Body //
   if (advancedSearchFlag === false) {
     let simpleSearch = document.querySelector("#search-box");
     simpleSearch.innerHTML = `
@@ -162,6 +85,78 @@ function populateSearch() {
 
 /////////////////////////////
 
+function updateCity(event) {
+  let cityValue = event.target.value;
+  console.log("moment value: ", cityValue); // Debugging
+
+  if (cityValue === "undefined") {
+    alert("Please select valid location");
+  } else {
+    clearInterval(intervalId);
+
+    if (!firstTimeFlag) {
+      selectedCitiesGlobal = [];
+      firstTimeFlag = true;
+    }
+
+    if (selectedCitiesGlobal.includes(cityValue)) {
+      selectedCitiesGlobal = selectedCitiesGlobal.filter(
+        (current) => current !== cityValue
+      );
+    }
+    selectedCitiesGlobal.unshift(cityValue);
+    selectedCitiesGlobal = selectedCitiesGlobal.slice(0, 3);
+
+    updateDisplay();
+    //intervalId = setInterval(updateDisplay, 1000); **DISABLED FOR CSS**
+
+    let homeElement = document.querySelector("#home");
+    homeElement.innerHTML = `<input class="button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
+  }
+}
+
+/////////////////////////////
+
+function updateDisplay() {
+  let selectedCities = [...selectedCitiesGlobal];
+
+  selectedCities = selectedCities.map((city) =>
+    city === "current" ? moment.tz.guess() : city
+  );
+
+  let citiesDisplayed = document.querySelector("#cities");
+  let selectedCitiesHTML = "";
+
+  for (let i = 0; i < selectedCities.length; i++) {
+    let cityTime = moment.tz(selectedCities[i]);
+    let cityName = selectedCities[i].replace("_", " ").split("/")[1];
+    selectedCitiesHTML += ` 
+          <div class="display-city-block">
+          <div class="city-name">
+          <h2>${cityName}</h2>
+          <div class="current-label"></div>
+          </div>
+          <div class="time">${cityTime.format(
+            "h:mm:ss"
+          )}<small>${cityTime.format("A")}</small>
+                    <div class="date">${cityTime.format(
+                      "MMMM Do YYYY"
+                    )}</div></div>
+          </div>`;
+  }
+  // Add <div class="weather"> Emoji Here </div> at top of div
+
+  citiesDisplayed.innerHTML = selectedCitiesHTML;
+
+  document.querySelectorAll(".current-label").forEach((label, index) => {
+    if (selectedCitiesGlobal[index] === "current") {
+      label.innerHTML = "<small>(current location)</small>";
+    }
+  });
+}
+
+/////////////////////////////
+
 function onLoad() {
   populateSearch();
 
@@ -169,14 +164,23 @@ function onLoad() {
   selectedCitiesGlobal = [...loadCities];
 
   clearInterval(intervalId);
-  updateCityDisplay();
-  //intervalId = setInterval(updateCityDisplay, 1000);  **DISABLED FOR CSS**
+  updateDisplay();
+  //intervalId = setInterval(updateDisplay, 1000);  **DISABLED FOR CSS**
 }
 
 //////////////////////////////
 // Global Code              //
 //////////////////////////////
+
+// Variables //
+let intervalId; // Stores the interval ID
+let firstTimeFlag = false;
+let advancedSearchFlag = false;
+let selectedCitiesGlobal = [];
 let allCitiesData = [];
+let cityValue = "";
+
+// Fetch JSON and API //
 fetch(
   "https://raw.githubusercontent.com/UnsuitableConfidence/SheCodes-Plus-World-Clock/refs/heads/Advanced/momentMasterList.json"
 )
@@ -185,12 +189,6 @@ fetch(
     allCitiesData = data;
   })
   .catch((error) => console.error("Error loading JSON, ", error));
-
-let intervalId; // Stores the interval ID
-let firstTimeFlag = false;
-let advancedSearchFlag = false;
-let selectedCitiesGlobal = [];
-let cityValue = "";
 
 onLoad();
 
@@ -205,12 +203,13 @@ onLoad();
 ////4. Differentiate current location from London with a line under "(current location)"
 ////5. Add "undefined" break alert
 ////6. Remove weather emoji, edit CSS as needed to make it pretty
-//SUBMIT
+////SUBMIT
 ////1. Add Advanced Dropdown
 ////2. Add up to 3 selected locations, then start deleting
 ////3. If a city is picked twice, delete previous and update new one at the top.
-//4. Update for weather API for emoji
-//5a. Re-edit CSS for Emoji integration
+//4a. Edit CSS for Emoji integration
+//4b. Update for weather API for emoji
+//5a. Make the whole layout prettier
 //5b. Make the Home button prettier
 //5c. Make the alert prettier
 //6. Pair down and make code more efficient
@@ -220,18 +219,6 @@ onLoad();
 //Use an array to get the city list; Basically I want the array to be added to my js, when change is detected, search the array for the right "value" and spit out the tz value
 // i.e. click "London, UK" -> html value is "Europe/London" to be used by moment
 //Will need to figure out how this works with the API as well but that is a wholeeeee other project
-
-/*
-https://www.w3schools.com/howto/howto_js_cascading_dropdown.asp Cascading drop down - "Select Region", then "Select City"
-      <form>
-        <select id="region">
-          <option value="northAmerica">North America</option>
-        </select>
-        <select id="city">
-          <option value="new_york">New York</option>
-        </select>
-        </form>
-*/
 
 /*
 passing functions
