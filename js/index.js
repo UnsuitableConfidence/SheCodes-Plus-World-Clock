@@ -66,13 +66,107 @@ function updateCity(event) {
     intervalId = setInterval(updateCityDisplay, 1000);
 
     let homeElement = document.querySelector("#home");
-    homeElement.innerHTML = `<input class="home-button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
+    homeElement.innerHTML = `<input class="button" type="button" value="View Load Cities" onClick="location.href=location.href">`;
+  }
+}
+
+/////////////////////////////
+
+function populateSearch() {
+  /////////////////////////////
+  //      Sub Functions      //
+  /////////////////////////////
+
+  function populateRegions() {
+    let regionSelect = document.querySelector("#select-region");
+    let selectedRegions = [
+      ...new Set(allCitiesData.map((city) => city.region)),
+    ];
+
+    regionSelect.innerHTML = `<option value="undefined">Select a region...</option>`;
+
+    selectedRegions.forEach((region) => {
+      let option = document.createElement("option");
+      option.value = region;
+      option.textContent = region;
+      regionSelect.appendChild(option);
+    });
+
+    document
+      .querySelector("#select-region")
+      .addEventListener("change", function () {
+        populateCities(this.value);
+      });
+  }
+
+  function populateCities(selectedRegion) {
+    let citySelect = document.querySelector("#select-city");
+    citySelect.innerHTML = `<option value="undefined">Select a city...</option>`;
+
+    let filteredCities = allCitiesData.filter(
+      (city) => city.region === selectedRegion
+    );
+
+    filteredCities.forEach((city) => {
+      let option = document.createElement("option");
+      option.value = city["momentValue"];
+      option.textContent = city.city;
+      citySelect.appendChild(option);
+    });
+
+    document
+      .querySelector("#select-city")
+      .addEventListener("change", function () {
+        let selectedMomentValue = this.value;
+        console.log("Selected Moment.js Value: ", selectedMomentValue);
+      });
+  }
+
+  /////////////////////////////
+  //      Body Function      //
+  /////////////////////////////
+
+  if (advancedSearchFlag === false) {
+    let simpleSearch = document.querySelector("#search-box");
+    simpleSearch.innerHTML = `
+    <select id="select-city">
+        <option value="undefined">Select a city...</option>
+        <option value="current">My current location</option>
+        <option value="Europe/London">London</option>
+        <option value="America/New_York">New York</option>
+        <option value="Pacific/Auckland">Auckland</option>
+        <option value="Africa/Djibouti">Djibouti</option>
+        <option value="Asia/Tokyo">Tokyo</option>
+        <option value="America/Toronto">Toronto</option>
+      </select> `;
+
+    document.querySelector("#toggle-search").value = "Advanced Search";
+    advancedSearchFlag = true;
+  } else {
+    let advancedSearch = document.querySelector("#search-box");
+    advancedSearch.innerHTML = `
+              <form name="city-search" id="search-city">
+            <select name="region" id="select-region">
+            </select>
+            <br /><br />
+            <select name="city" id="select-city">
+              <option  disabled selected>Select a city...</option>
+            </select>
+          </form>
+    `;
+
+    document.querySelector("#toggle-search").value = "Simple Search";
+    advancedSearchFlag = false;
+
+    populateRegions();
   }
 }
 
 /////////////////////////////
 
 function onLoad() {
+  populateSearch();
+
   let loadCities = ["Europe/London", "America/New_York", "Pacific/Auckland"];
   selectedCitiesGlobal = [...loadCities];
 
@@ -81,29 +175,27 @@ function onLoad() {
   intervalId = setInterval(updateCityDisplay, 1000);
 }
 
-/////////////////////////////
-
-function advancedSearch() {}
-
 //////////////////////////////
 // Global Code              //
 //////////////////////////////
 let allCitiesData = [];
-fetch("momentMasterList.json")
+fetch(
+  "https://raw.githubusercontent.com/UnsuitableConfidence/SheCodes-Plus-World-Clock/refs/heads/Advanced/momentMasterList.json"
+)
   .then((response) => response.json())
   .then((data) => {
     allCitiesData = data;
-    //populateRegions();
   })
   .catch((error) => console.error("Error loading JSON, ", error));
 
 let intervalId; // Stores the interval ID
 let firstTimeFlag = false;
+let advancedSearchFlag = false;
 let selectedCitiesGlobal = [];
 
 onLoad();
 
-let citySelect = document.querySelector("#city-selection");
+let citySelect = document.querySelector("#select-city");
 citySelect.addEventListener("change", updateCity);
 
 //////////////////////////////

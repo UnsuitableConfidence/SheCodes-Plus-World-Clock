@@ -128,8 +128,8 @@ select {
   padding: 4px;
 }
 
-/* Refresh Button Styling */
-.home-button {
+/* Button Styling */
+button {
   display: block;
   margin: 15px auto 5px;
   padding: 8px 18px;
@@ -143,12 +143,12 @@ select {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.home-button:hover {
+button:hover {
   background-color: rgba(0, 2, 31, 0.8);
   transform: scale(1.03);
 }
 
-.home-button:active {
+button:active {
   transform: scale(0.97);
 }
 
